@@ -152,6 +152,7 @@ telefone <- gsub("Tel:|Telefone:|[-\\(\\)]","",telefone)
 telefone <- gsub("\\s","",telefone)
 telefone <- gsub("^(\\d{2})","(\\1)",telefone)
 telefone <- gsub("^(.{9})", "\\1-", telefone)
+telefone
 
 # Data de nascimento
 
@@ -180,6 +181,7 @@ dt <- gsub("([-/])(\\d{3})$", "\\10\\2",dt)
 # numero
 # Cidade/Planeta
 
+
 dt_char <- dt
 
 dt <- dmy(dt)
@@ -191,6 +193,19 @@ dmy("01/01/0900") %>% typeof()
 y <- pdf[grepl("[nN]ome:", pdf)]
 y <- str_extract(y, "\\S+(?= \\(aka)")
 
+endereco <- pdf[grepl("Endereço:", pdf)]
+
+Logradouro <- gsub("(Endereço: |,.*)", "", endereco)
+
+Numeros <- str_extract(endereco, "\\d+")
+
+Bairro <- gsub(".*,", "", endereco)
+Bairro <- Bairro %>% trimws("both") %>% gsub("\\.$", "", .)
+
+
+# data frame
+df <- data.frame(Nome = x, Alias = y, CEP = z, CPF = cpf, telefone, 'Data de nascimento' = dt, 
+           Logradouro, Numero = Numeros, Bairro)
 
 
 # Titanic -----------------------------------------------------------------
@@ -203,10 +218,55 @@ titanic <- read.csv("titanic.csv") %>%
 titanic %>% 
   filter(grepl("Cumings", Name))
 
+
+pronome <- str_extract(titanic$Name, "[A-Za-z]+(?=\\.)")
+sum(is.na(pronome))
+
+lastname <- str_extract(titanic$Name, "[A-Za-z]+(?=,)")
+titanic$Name
+name <- str_extract(titanic$Name, "(?<=\\. ).*(?=\\()|(?<=\\. ).*$")
+name <- trimws(name, "both")
+# ?= : até
+
+df <- data.frame(name, lastname, pronome, original = titanic$Name)
+View(df)
+
+unique(df$pronome)
+
+str_extract(df$original, "(?<=\\().*(?=\\))")
+
+df %>%
+  mutate(
+    singlename = case_when(
+      grepl("Mrs|mrs|MRS|[cC]ountess|[lL]ady|Mlle", pronome) ~ str_extract(original, "(?<=\\().*(?=\\))"),
+      TRUE ~ NA_character_
+    )
+  ) %>% View
+
+df %>%
+  filter(grepl("Mr(s)?", pronome)) %>% View
+
+
+
+
+glimpse(titanic)
 names(titanic)
 
 # Extrair o nome
 # Extrair o sobrenome
 # Extrair o nome de Solteira (quando necessário)
+
+
+# caracteres especiais usar \\
+# *: 0 ou mais
+# +: 1 ou mais
+# ?: pode haver ou não algo escrito
+
+
+x <- "Banana Nanana"
+str_extract_all(x, "(?<=N)anana")
+
+#DATASUS ---------------------------------------------------------------
+library(read.dbc)
 
 
