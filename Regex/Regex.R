@@ -181,6 +181,21 @@ dt <- gsub("([-/])(\\d{3})$", "\\10\\2",dt)
 # numero
 # Cidade/Planeta
 
+<<<<<<< HEAD
+=======
+v <- pdf[grep("Endereço", pdf)]
+v <- gsub("CEP.*", "", v)
+v <- gsub("Endereço: *", "", v)
+
+Numeros <- str_extract(v, "\\d+")
+# ifelse(is.na(Numeros), "SN", Numeros)
+lista_log <- str_split(v, ",")
+Logradouro <- lapply(lista_log, function(x) x[1]) %>% Reduce(c, .)
+
+Bairro <- gsub(".*,", "", v)
+
+Bairro <- Bairro %>% trimws("both") %>% gsub("\\.", "", .)
+>>>>>>> a558caa903e568094551feea271823fe9583bd30
 
 dt_char <- dt
 
@@ -208,6 +223,14 @@ df <- data.frame(Nome = x, Alias = y, CEP = z, CPF = cpf, telefone, 'Data de nas
            Logradouro, Numero = Numeros, Bairro)
 
 
+# data frame
+
+df <- data.frame(Nome = x, Alias = y, CEP = z, CPF = cpf,
+           telefone, "Data de nascimento" = dt, Logradouro,
+           Numero = Numeros, Bairro)
+
+openxlsx::write.xlsx(df, "resultado.xlsx")
+
 # Titanic -----------------------------------------------------------------
 
 # https://www.kaggle.com/code/elijahrona/analysis-with-regular-expressions-regex/input
@@ -218,15 +241,24 @@ titanic <- read.csv("titanic.csv") %>%
 titanic %>% 
   filter(grepl("Cumings", Name))
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> a558caa903e568094551feea271823fe9583bd30
 pronome <- str_extract(titanic$Name, "[A-Za-z]+(?=\\.)")
 sum(is.na(pronome))
 
 lastname <- str_extract(titanic$Name, "[A-Za-z]+(?=,)")
+<<<<<<< HEAD
 titanic$Name
 name <- str_extract(titanic$Name, "(?<=\\. ).*(?=\\()|(?<=\\. ).*$")
 name <- trimws(name, "both")
 # ?= : até
+=======
+titanic$Name[992]
+name <- str_extract(titanic$Name, "(?<=\\. ).*(?=\\()|(?<=\\. ).*$")
+name <- trimws(name, "both")
+>>>>>>> a558caa903e568094551feea271823fe9583bd30
 
 df <- data.frame(name, lastname, pronome, original = titanic$Name)
 View(df)
@@ -235,7 +267,12 @@ unique(df$pronome)
 
 str_extract(df$original, "(?<=\\().*(?=\\))")
 
+<<<<<<< HEAD
 df %>%
+=======
+df %>% 
+  rowwise() %>% 
+>>>>>>> a558caa903e568094551feea271823fe9583bd30
   mutate(
     singlename = case_when(
       grepl("Mrs|mrs|MRS|[cC]ountess|[lL]ady|Mlle", pronome) ~ str_extract(original, "(?<=\\().*(?=\\))"),
@@ -243,11 +280,20 @@ df %>%
     )
   ) %>% View
 
+<<<<<<< HEAD
 df %>%
   filter(grepl("Mr(s)?", pronome)) %>% View
 
 
 
+=======
+df %>% 
+  filter(grepl("Mr(s)?", pronome)) %>% View
+
+x <- "Banana Nanana"
+
+str_extract_all(x, "(?<=N).*(?=a)")
+>>>>>>> a558caa903e568094551feea271823fe9583bd30
 
 glimpse(titanic)
 names(titanic)
@@ -257,16 +303,14 @@ names(titanic)
 # Extrair o nome de Solteira (quando necessário)
 
 
-# caracteres especiais usar \\
-# *: 0 ou mais
-# +: 1 ou mais
-# ?: pode haver ou não algo escrito
+# DATASUS -----------------------------------------------------------------
 
+# https://datasus.saude.gov.br/transferencia-de-arquivos/#
 
-x <- "Banana Nanana"
-str_extract_all(x, "(?<=N)anana")
-
-#DATASUS ---------------------------------------------------------------
 library(read.dbc)
 
+dados <- read.dbc("../dados/arquivo/PASP1801a.dbc")
+glimpse(dados)
 
+unique(dados$PA_RACACOR)
+>>>>>>> a558caa903e568094551feea271823fe9583bd30
