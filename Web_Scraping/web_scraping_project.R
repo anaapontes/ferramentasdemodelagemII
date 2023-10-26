@@ -9,7 +9,7 @@ library(rvest)
 
 wpage <- "https://emec.mec.gov.br"
 maxpages <- 13
-# selenium()
+selenium()
 
 # JAVA PATH
 # Firefox (opcional)
@@ -19,10 +19,18 @@ maxpages <- 13
 
 selenium(retcommand = TRUE, check = TRUE)
 
-
 remote_driver <- rsDriver(
   browser = "firefox",
   port = free_port(),
+  verbose = FALSE,
+  chromever = NULL # necessário
+)
+
+# Tentativa do stackoverflow
+shell('docker run -d -p 4445:4444 selenium/standalone-firefox')
+remote_driver <- rsDriver(
+  browser = "firefox",
+  port = 4445L,
   verbose = FALSE,
   chromever = NULL # necessário
 )
